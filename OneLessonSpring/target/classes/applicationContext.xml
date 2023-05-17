@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans  xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+        <!-- Тег для изьятия значений из файла musicPlayer.properties -->
+        <context:property-placeholder location="classpath:musicPlayer.properties"/>
+
+    <bean id="musicBean"
+          class="org.example.ClassicalMusic">
+    </bean>
+
+    <bean id="musicPlayer"
+          class="org.example.MusicPlayer">
+        <!-- Внедряем зависимость через конструктор
+        <constructor-arg ref="musicBean"/>
+        -->
+
+        <!-- Внедряем зависимость через сеттер -->
+        <property name="music" ref="musicBean"/>
+
+        <!-- Внедряем значения для полей
+        <property name="name" value="Some name"/>
+        <property name="volume" value="50"/>
+        -->
+
+        <!-- Внедряем значения для полей из файла musicPlayer.properties -->
+      <property name="name" value="${musicPlayer.name}"/>
+      <property name="volume" value="${musicPlayer.volume}"/>
+
+        <property name="musicList">
+            <list>
+                <bean id="classicalMusic"
+                class="org.example.ClassicalMusic">
+
+                </bean>
+                <bean id="rockMusic"
+                      class="org.example.RockMusic">
+
+                </bean>
+            </list>
+        </property>
+
+    </bean>
+
+</beans>
