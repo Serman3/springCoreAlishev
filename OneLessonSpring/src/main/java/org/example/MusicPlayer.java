@@ -1,54 +1,44 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import java.util.Random;
+
+
+@Component
 public class MusicPlayer {
-    private Music music;
-    private List<Music> musicList = new ArrayList<>();
+
+    @Value("${musicPlayer.name}")
     private String name;
+
+    @Value("${musicPlayer.volume}")
     private int volume;
-
-    public MusicPlayer(){};
-
-    // Inversion of control
-    public MusicPlayer(Music music){
-        this.music = music;
-    }
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getVolume() {
         return volume;
     }
 
-    public void setVolume(int volume) {
-        this.volume = volume;
-    }
+    @Autowired
+    private RockMusic rockMusic;
 
-    public List<Music> getMusicList() {
-        return musicList;
-    }
+    @Autowired
+    private ClassicalMusic classicalMusic;
 
-    public void setMusicList(List<Music> musicList) {
-        this.musicList = musicList;
-    }
-
-    // Spring отбрасывает в названии метода set, поэтому используем в xml файле имя сетода Music (вместо setMusic)
-    public void setMusic(Music music){
-        this.music = music;
-    }
-
-    public void playMusicList(){
-        for (Music music : musicList){
-            System.out.println("Playing " + music.getSong());
+    public String playMusic(Enum statusMusic){
+        Random random = new Random();
+        if(statusMusic.equals(StatusMusic.CLASSICAL)){
+            return classicalMusic.getSong().get(random.nextInt(3));
         }
+        if (statusMusic.equals(StatusMusic.ROCK)){
+            return rockMusic.getSong().get(random.nextInt(3));
+        }
+        return "Такого жанра нет";
     }
 
 }

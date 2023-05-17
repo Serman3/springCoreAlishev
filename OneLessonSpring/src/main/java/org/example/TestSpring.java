@@ -5,16 +5,13 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class TestSpring {
     public static void main(String[] args) {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
-        // Spring ищет в папке resources файл applicationContext.xml и помещает данные из него в контекст приложения
-
-        //Music music = context.getBean("musicBean", Music.class); // получили bean из контекста
-        //MusicPlayer musicPlayer = new MusicPlayer(music);
-
-        //Dependency injection
         MusicPlayer musicPlayer = context.getBean("musicPlayer", MusicPlayer.class);
-        musicPlayer.playMusicList();
-        /*System.out.println(musicPlayer.getName());
-        System.out.println(musicPlayer.getVolume());*/
+        System.out.println(musicPlayer.playMusic(StatusMusic.ROCK));
+        System.out.println(musicPlayer.getName());
+        System.out.println(musicPlayer.getVolume());
+
+        ClassicalMusic classicalMusic1 = context.getBean("classicalMusic", ClassicalMusic.class);
+
         context.close();
     }
 }
