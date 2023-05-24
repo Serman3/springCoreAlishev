@@ -2,16 +2,17 @@ package com.example.SpringCrud.controllers;
 
 import com.example.SpringCrud.dao.PersonDao;
 import com.example.SpringCrud.models.Person;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/people")
 public class PeopleController {
-
     @Autowired
     private PersonDao personDao;
 
@@ -38,7 +39,10 @@ public class PeopleController {
     }
 
     @PostMapping()
-    public String create(@ModelAttribute Person person){
+    public String create(@ModelAttribute @Valid Person person, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return "people/new";
+        }
         personDao.save(person);
         return "redirect:/people";
     }
@@ -50,7 +54,10 @@ public class PeopleController {
     }
 
     @PatchMapping("/{id}")
-    public String update(@PathVariable("id") int id, @ModelAttribute Person person){
+    public String update(@PathVariable("id") int id, @ModelAttribute @Valid Person person, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return "people/edit";
+        }
         personDao.update(id, person);
         return "redirect:/people";
     }
