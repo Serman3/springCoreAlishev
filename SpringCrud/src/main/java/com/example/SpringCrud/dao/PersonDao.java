@@ -1,48 +1,40 @@
 package com.example.SpringCrud.dao;
 
 import com.example.SpringCrud.models.Person;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import java.util.ArrayList;
+
 import java.util.List;
 
 @Component
 public class PersonDao {
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
-    private static int PEOPLE_COUNT;
-    private List<Person> people;
-
-    {
-        people = new ArrayList<>();
-        people.add(new Person(++PEOPLE_COUNT, "Bob", 24, "bob@mail.ru"));
-        people.add(new Person(++PEOPLE_COUNT, "Max", 52, "max@mail.ru"));
-        people.add(new Person(++PEOPLE_COUNT, "Alex", 31, "alex@gmail.com"));
-        people.add(new Person(++PEOPLE_COUNT, "Anna", 28, "anna@yahoo.com"));
-        people.add(new Person(++PEOPLE_COUNT, "Katy", 45, "katy@mail.ru"));
+    public PersonDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-
     public List<Person> index(){
-        return people;
+        return jdbcTemplate.query("SELECT * FROM people", new BeanPropertyRowMapper<>(Person.class));
     }
 
     public Person show(int id){
-        return people.stream().filter(person -> person.getId() == id).findAny().orElse(null);
+        return jdbcTemplate.query("SELECT * FROM people WHERE id = ?", new Object[]{id}, new BeanPropertyRowMapper<>(Person.class))
+                .stream().findAny().orElse(null);
     }
 
     public void save(Person  person){
-        person.setId(++PEOPLE_COUNT);
-        people.add(person);
+        jdbcTemplate.update("INSERT INTO people (fio, year_birthday) VALUES (?,?)", person.getFio(), person.getYearBirthday());
     }
 
     public void update(int id, Person person){
-        // Обновляем имя
-        Person personToBeUpdated = show(id);
-        personToBeUpdated.setName(person.getName());
-        personToBeUpdated.setAge(person.getAge());
-        personToBeUpdated.setEmail(person.getEmail());
+        jdbcTemplate.update("UPDATE people SET fio=?, year_birthday=? WHERE id=?", person.getFio(), person.getYearBirthday(), id);
     }
 
     public void delete(int id){
-        people.removeIf(p -> p.getId() == id);
+        jdbcTemplate.update("DELETE FROM people WHERE id=?", id);
     }
 }

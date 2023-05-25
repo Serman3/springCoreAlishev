@@ -1,26 +1,21 @@
 package com.example.SpringCrud.models;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 public class Person {
     private int id;
-    @NotEmpty(message = "Name should not be empty")
-    @Size(min = 2, max = 30, message = "Name should be between 2 and 30 characters")
-    private String name;
-    @Min(value = 0, message = "Age should be greater than 0")
-    private int age;
-    @NotEmpty(message = "Email should not be empty")
-    @Email(message = "Email should be valid")
-    private String email;
+    @NotEmpty(message = "Fio should not be empty")
+    @Size(min = 2, max = 30, message = "Fio should be between 2 and 30 characters")
+    private String fio;
+    @Min(value = 0, message = "Year should be greater than 0")
+    private int yearBirthday;
 
     public Person(){};
-    public Person(int id, String name, int age, String email) {
+    public Person(int id, String fio, int yearBirthday) {
         this.id = id;
-        this.name = name;
-        this.age = age;
-        this.email = email;
+        this.fio = fio;
+        this.yearBirthday = yearBirthday;
     }
 
     public int getId() {
@@ -31,27 +26,20 @@ public class Person {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFio() {
+        return fio;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFio(String fio) {
+        this.fio = fio;
     }
 
-    public int getAge() {
-        return age;
+    public int getYearBirthday() {
+        return yearBirthday;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setYearBirthday(int yearBirthday) {
+        this.yearBirthday = yearBirthday;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }
