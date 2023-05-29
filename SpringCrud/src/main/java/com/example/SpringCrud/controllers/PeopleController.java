@@ -1,5 +1,6 @@
 package com.example.SpringCrud.controllers;
 
+import com.example.SpringCrud.dao.BookDao;
 import com.example.SpringCrud.dao.PersonDao;
 import com.example.SpringCrud.models.Person;
 import jakarta.validation.Valid;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 public class PeopleController {
     @Autowired
     private PersonDao personDao;
+    @Autowired
+    private BookDao bookDao;
 
     public PeopleController(PersonDao personDao) {
         this.personDao = personDao;
@@ -23,13 +26,14 @@ public class PeopleController {
     @GetMapping
     public String index(Model model){
         model.addAttribute("people", personDao.index());
-        return "index";
+        return "people/index";
     }
 
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model){
         model.addAttribute("person", personDao.show(id));
-        return "show";
+        model.addAttribute("books", bookDao.showPeopleBooks(id));
+        return "people/show";
     }
 
     @GetMapping("/new")

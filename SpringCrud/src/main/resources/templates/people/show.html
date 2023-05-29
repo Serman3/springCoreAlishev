@@ -10,6 +10,18 @@
 <p th:text="${person.getYearBirthday()}">YearBirthday</p>
 <br/>
 <hr/>
+<div th:switch="${books.isEmpty()}">
+    <p th:case="true">Человек пока не взял ни одной книги</p>
+    <p th:case="false">
+    <div th:each="book : ${books}">
+        <a th:href="@{/books/{id}(id=${book.getId()})}"
+           th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYears()}">Book
+        </a>
+    </div>
+    </p>
+</div>
+<br/>
+<hr/>
 <a th:href="@{/people/{id}/edit(id=${person.getId()})}">Edit</a>
 <br/>
 <hr/>
