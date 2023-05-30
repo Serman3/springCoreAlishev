@@ -1,12 +1,10 @@
 package com.example.SpringCrud.dao;
 
 import com.example.SpringCrud.models.Book;
-import com.example.SpringCrud.models.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 
 @Component
@@ -33,5 +31,21 @@ public class BookDao {
 
     public void releaseTheBook(int id){
         jdbcTemplate.update("UPDATE books SET people_id = null WHERE id =?", id);
+    }
+
+    public void createBook(Book book){
+        jdbcTemplate.update("INSERT INTO books (name, author, years) VALUES (?, ?, ?)", book.getName(), book.getAuthor(), book.getYears());
+    }
+
+    public void deleteBook(int id){
+        jdbcTemplate.update("DELETE FROM books WHERE id =?", id);
+    }
+
+    public void updateBook(Book book){
+        jdbcTemplate.update("UPDATE books SET name =?, author =?, years =? WHERE id =?", book.getName(), book.getAuthor(), book.getYears(), book.getId());
+    }
+
+    public void addBookToPerson(int personId, int bookId){
+        jdbcTemplate.update("UPDATE books SET people_id = ? WHERE id =?", personId, bookId);
     }
 }

@@ -38,7 +38,7 @@ public class PersonDao {
         jdbcTemplate.update("DELETE FROM people WHERE id=?", id);
     }
 
-    public List<Person> peopleWhoTookTheBook(int bookId){
+    public List<Person> getAllPersonByBookId(int bookId){
         return jdbcTemplate.query("""
                                       SELECT p.*
                                       FROM people p

@@ -13,7 +13,7 @@ public class Book {
     @NotEmpty(message = "Author should not be empty")
     private String author;
 
-    @Min(value = 0, message = "Year should not be empty")
+    @Min(value = 0, message = "Year should be greater than 0")
     private int years;
 
     public Book(){};
