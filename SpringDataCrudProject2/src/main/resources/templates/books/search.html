@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Поиск книги</title>
+</head>
+<body>
+<div id="search">
+    <form id="searchForm" th:action="@{/books/search}" method="GET">
+        <input type="text" id="query" name="query" placeholder="Введите поисковый запрос:">
+        <button type="submit">Искать</button>
+    </form>
+    <!-- <div id="searchResults" th:replace="~{books/results}"></div>  -->
+ </div>
+ <div th:fragment="results">
+     <div th:if="${not searchBooks.isEmpty()}">
+         <div th:each="book : ${searchBooks}">
+             <a th:href="@{/books/{id}(id=${book.getId()})}"
+                th:text="${book.getName()}">
+             </a>
+             <br/>
+             <a th:href="@{/people/{id}(id=${book.getPerson().getId()})}"
+                th:text="${'Книга сейчас у: ' + book.getPerson().getFio()}">
+             </a>
+         </div>
+     </div>
+     <div th:if="${searchBooks.isEmpty()}">
+         <p>Книг не найдено.</p>
+     </div>
+ </div>
+ </body>
+ </html>

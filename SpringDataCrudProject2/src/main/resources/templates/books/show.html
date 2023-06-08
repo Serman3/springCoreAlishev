@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Книга</title>
+</head>
+<body>
+<p th:text="${book.getId()}">Id</p>
+<p th:text="${book.getAuthor}">Author</p>
+<p th:text="${book.getYears}">Years</p>
+<p th:text="${book.getName}">NameBook</p>
+
+<br/>
+<hr/>
+<form th:method="GET" th:action="@{/books/{id}/edit(id=${book.getId()})}" th:object="${book}">
+    <input type="submit" value="Edit"/>
+</form>
+<br/>
+<form th:method="DELETE" th:action="@{/books/{id}/delete(id=${book.getId()})}" th:object="${book}">
+    <input type="submit" value="Delete"/>
+</form>
+<br/>
+<hr/>
+<div th:if="${people.isEmpty()}">
+    <p>Эта книга свободна. Кому назначить ее?</p>
+    <form th:method="PATCH" th:action="@{/books/{id}/add_person(id=${book.getId()})}">
+        <label for="person">Выберите человека</label>
+        <select id="person" th:object="${person}" th:field="*{id}">
+            <option th:each="person : ${allPeople}" th:value="${person.getId()}" th:text="${person.getFio()}"></option>
+        </select>
+        <input type="submit" value="Назначить книгу"/>
+    </form>
+</div>
+<div th:if="${not people.isEmpty()}">
+    <div th:each="person : ${people}">
+        <p th:text="${'Книга сейчас у: ' + person.getFio()}">fio</p>
+        <form th:method="PATCH" th:action="@{/books/{id}(id=${book.getId()})}" th:object="${book}">
+            <input type="submit" value="Освободить книгу!"/>
+        </form>
+    </div>
+</div>
+</body>
+</html>

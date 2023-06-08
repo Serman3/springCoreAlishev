@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Человек</title>
+</head>
+<body>
+<p th:text="${person.getId()}">Id</p>
+<p th:text="${person.getFio()}">Fio</p>
+<p th:text="${person.getYearBirthday()}">YearBirthday</p>
+<br/>
+<hr/>
+<h2>Книги:</h2>
+<div th:switch="${books.isEmpty()}">
+    <p th:case="true">Человек пока не взял ни одной книги</p>
+    <p th:case="false">
+    <div th:each="book : ${books}">
+        <div th:if="${book.isResultOverdue()}">
+            <a th:href="@{/books/{id}(id=${book.getId()})}"
+                style="color:red"
+                th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYears()}">Book
+            </a>
+        </div>
+        <div th:if="${not book.isResultOverdue()}">
+            <a th:href="@{/books/{id}(id=${book.getId()})}"
+                th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYears()}">Book
+            </a>
+        </div>
+    </div>
+    </p>
+</div>
+<br/>
+<hr/>
+<form th:method="GET" th:action="@{/people/{id}/edit(id=${person.getId()})}">
+    <input type="submit" value="Редактировать"/>
+</form>
+<!--<a th:href="@{/people/{id}/edit(id=${person.getId()})}">Edit</a>  -->
+<br/>
+<form th:method="DELETE" th:action="@{/people/{id}(id=${person.getId()})}">
+    <input type="submit" value="Удалить"/>
+</form>
+</body>
+</html>
