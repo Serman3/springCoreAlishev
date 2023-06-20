@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)  // для использования аннотации @PreAuthorize для проверки ролей у пользователя
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
    /* @Autowired
@@ -39,8 +41,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception{
             http.authorizeRequests()
+                    //.antMatchers("/admin").hasRole("ADMIN") // на страницу /admin  доступ только для пользвателя с ролью ROLE_ADMIN
                     .antMatchers("/auth/login", "/error", "/auth/registration").permitAll() // на эти страницы могут зайти все
-                    .anyRequest().authenticated()           // на остальные могут только аутентифицированные
+                    .anyRequest().hasAnyRole("USER", "ADMIN") // ко всем остальным страницам доступ только для ROLE_USER И ROLE_ADMIN
+                    //.anyRequest().authenticated()           // на остальные могут только аутентифицированные
                     .and()
                     .formLogin().loginPage("/auth/login") // наша форма с логином
                     .loginProcessingUrl("/process_login")    // spring security сам обработает данные нашей формы login
