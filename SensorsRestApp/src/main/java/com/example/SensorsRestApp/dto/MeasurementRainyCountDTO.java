@@ -1,9 +1,9 @@
 package com.example.SensorsRestApp.dto;
 
-public class MeasurementCountDTO {
+public class MeasurementRainyCountDTO {
     private int count;
 
-    public MeasurementCountDTO(int count) {
+    public MeasurementRainyCountDTO(int count) {
         this.count = count;
     }
 

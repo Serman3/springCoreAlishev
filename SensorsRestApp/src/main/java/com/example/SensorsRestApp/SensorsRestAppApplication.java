@@ -16,5 +16,4 @@ public class SensorsRestAppApplication {
 	public ModelMapper modelMapper(){
 		return new ModelMapper();
 	}
-
 }

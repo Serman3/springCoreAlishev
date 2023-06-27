@@ -8,14 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-
 @Service
 @Transactional(readOnly = true)
 public class SensorsService {
 
+    @Autowired
     private final SensorsRepository sensorsRepository;
 
-    @Autowired
     public SensorsService(SensorsRepository sensorsRepository) {
         this.sensorsRepository = sensorsRepository;
     }
@@ -38,3 +37,4 @@ public class SensorsService {
         sensorsRepository.save(sensor);
     }
 }
+

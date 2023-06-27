@@ -1,9 +1,10 @@
 package com.example.SensorsRestApp.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalTime;
 
@@ -31,7 +32,7 @@ public class Measurement implements Serializable {
     @JoinColumn(name = "sensor", referencedColumnName = "name", nullable = false)
     private Sensor sensor;
 
-    @Transient
+    @Column(name = "time")
     private LocalTime time;
 
     public Measurement(){};

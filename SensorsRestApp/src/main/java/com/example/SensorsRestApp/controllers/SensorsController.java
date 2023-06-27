@@ -1,11 +1,13 @@
 package com.example.SensorsRestApp.controllers;
 
+import com.example.SensorsRestApp.dto.SensorDTO;
 import com.example.SensorsRestApp.models.Sensor;
 import com.example.SensorsRestApp.services.SensorsService;
-import com.example.SensorsRestApp.util.sensorsError.SensorErrorResponse;
-import com.example.SensorsRestApp.util.sensorsError.SensorNotCreatedException;
-import com.example.SensorsRestApp.util.sensorsError.SensorNotFoundException;
-import com.example.SensorsRestApp.util.validators.SensorValidator;
+import com.example.SensorsRestApp.utill.sensorsError.SensorErrorResponse;
+import com.example.SensorsRestApp.utill.sensorsError.SensorNotCreatedException;
+import com.example.SensorsRestApp.utill.sensorsError.SensorNotFoundException;
+import com.example.SensorsRestApp.utill.validators.SensorValidator;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,36 +15,51 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController // @Controller + @ResponseBody над каждым методом
 @RequestMapping("/sensors")
 public class SensorsController {
 
+    @Autowired
     private final SensorsService sensorsService;
+    @Autowired
     private final SensorValidator sensorValidator;
 
     @Autowired
-    public SensorsController(SensorsService sensorsService, SensorValidator sensorValidator) {
+    private final ModelMapper modelMapper;
+
+    public SensorsController(SensorsService sensorsService, SensorValidator sensorValidator, ModelMapper modelMapper) {
         this.sensorsService = sensorsService;
         this.sensorValidator = sensorValidator;
+        this.modelMapper = modelMapper;
     }
 
     @GetMapping()
-    public List<Sensor> getSensors() {
-        return sensorsService.findAll(); // Jackson конвертирует эти объекты в JSON
+    public List<SensorDTO> getSensors() {
+        return sensorsService.findAll().stream().map(this::convertToSensorDTO).collect(Collectors.toList()); // Jackson конвертирует эти объекты в JSON
     }
 
     @GetMapping("/{id}")
-    public Sensor getSensor(@PathVariable("id") int id) {
-        return sensorsService.findOne(id); // Jackson конвертирует в JSON
+    public SensorDTO getSensor(@PathVariable("id") int id) {
+        return convertToSensorDTO(sensorsService.findOne(id)); // Jackson конвертирует в JSON
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<Sensor> createSensor(@RequestBody @Valid Sensor sensor, BindingResult bindingResult){
-        sensorValidator.validate(sensor, bindingResult);
-        sensorsService.save(sensor);
-        return ResponseEntity.ok().body(sensor);
+    public ResponseEntity<HttpStatus> createSensor(@RequestBody @Valid SensorDTO sensorDTO, BindingResult bindingResult){
+        sensorValidator.validate(sensorDTO, bindingResult);
+        sensorsService.save(convertToSensor(sensorDTO));
+        return ResponseEntity.ok(HttpStatus.OK);
     }
+
+    private Sensor convertToSensor(SensorDTO sensorDTO){
+        return modelMapper.map(sensorDTO, Sensor.class);
+    }
+
+    private SensorDTO convertToSensorDTO(Sensor sensor){
+        return modelMapper.map(sensor, SensorDTO.class);
+    }
+
 
     @ExceptionHandler
     private ResponseEntity<SensorErrorResponse> handleException(SensorNotFoundException exception){
