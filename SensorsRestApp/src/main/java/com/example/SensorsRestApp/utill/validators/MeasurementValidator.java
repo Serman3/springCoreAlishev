@@ -28,7 +28,7 @@ public class MeasurementValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
-        MeasurementDTO measurement = (MeasurementDTO) target;
+        Measurement measurement = (Measurement) target;
 
         if (measurement.getSensor() == null) {
             errors.rejectValue("sensor", "Sensor should not be null");

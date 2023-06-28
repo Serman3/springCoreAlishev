@@ -28,7 +28,7 @@ public class SensorValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
-        SensorDTO sensorDTO = (SensorDTO) target;
+        Sensor sensor = (Sensor) target;
 
         if(errors.hasErrors()){
             StringBuilder errorMessage = new StringBuilder();
@@ -39,7 +39,7 @@ public class SensorValidator implements Validator {
             throw new SensorNotCreatedException(errorMessage.toString());
         }
 
-        if(sensorsService.findBySensorName(sensorDTO.getName()).isPresent()){
+        if(sensorsService.findBySensorName(sensor.getName()).isPresent()){
             throw new SensorNotCreatedException("Сенсор с таким именем уже существут");
         }
     }

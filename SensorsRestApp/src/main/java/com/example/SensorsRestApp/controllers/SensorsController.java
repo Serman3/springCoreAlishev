@@ -47,8 +47,9 @@ public class SensorsController {
 
     @PostMapping("/registration")
     public ResponseEntity<HttpStatus> createSensor(@RequestBody @Valid SensorDTO sensorDTO, BindingResult bindingResult){
-        sensorValidator.validate(sensorDTO, bindingResult);
-        sensorsService.save(convertToSensor(sensorDTO));
+        Sensor sensor = convertToSensor(sensorDTO);
+        sensorValidator.validate(sensor, bindingResult);
+        sensorsService.save(sensor);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 

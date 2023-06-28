@@ -37,8 +37,9 @@ public class MeasurementsController {
 
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> createMeasurement(@RequestBody @Valid MeasurementDTO measurementDTO, BindingResult bindingResult){
-        measurementValidator.validate(measurementDTO, bindingResult);
-        measurementsService.createMeasurement(convertToMeasurement(measurementDTO));
+        Measurement measurement = convertToMeasurement(measurementDTO);
+        measurementValidator.validate(measurement, bindingResult);
+        measurementsService.createMeasurement(measurement);
         //return ResponseEntity.ok().body(measurement);
         return ResponseEntity.ok(HttpStatus.OK);
     }
