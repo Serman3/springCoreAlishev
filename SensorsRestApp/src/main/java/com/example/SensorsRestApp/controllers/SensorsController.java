@@ -10,6 +10,7 @@ import com.example.SensorsRestApp.utill.validators.SensorValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -36,8 +37,12 @@ public class SensorsController {
     }
 
     @GetMapping()
-    public List<SensorDTO> getSensors() {
-        return sensorsService.findAll().stream().map(this::convertToSensorDTO).collect(Collectors.toList()); // Jackson конвертирует эти объекты в JSON
+    public ResponseEntity<List<SensorDTO>> getSensors() {
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(sensorsService.findAll().stream().map(this::convertToSensorDTO).collect(Collectors.toList()));
+                //new ResponseEntity<>(sensorsService.findAll().stream().map(this::convertToSensorDTO).collect(Collectors.toList()), HttpStatus.OK);
+              //  ResponseEntity.ok(sensorsService.findAll().stream().map(this::convertToSensorDTO).collect(Collectors.toList())); // Jackson конвертирует эти объекты в JSON
     }
 
     @GetMapping("/{id}")
