@@ -14,7 +14,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,11 +54,13 @@ public class SensorsController {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<HttpStatus> createSensor(@RequestBody @Valid SensorDTO sensorDTO, BindingResult bindingResult){
+    public ResponseEntity<?> createSensor(@RequestBody @Valid SensorDTO sensorDTO, BindingResult bindingResult){
         Sensor sensor = convertToSensor(sensorDTO);
         sensorValidator.validate(sensor, bindingResult);
         sensorsService.save(sensor);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(sensorDTO);
     }
 
     private Sensor convertToSensor(SensorDTO sensorDTO){
