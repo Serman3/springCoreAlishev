@@ -11,6 +11,7 @@ import com.example.SensorsRestApp.utill.validators.MeasurementValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -36,22 +37,28 @@ public class MeasurementsController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> createMeasurement(@RequestBody @Valid MeasurementDTO measurementDTO, BindingResult bindingResult){
+    public ResponseEntity<?> createMeasurement(@RequestBody @Valid MeasurementDTO measurementDTO, BindingResult bindingResult){
         Measurement measurement = convertToMeasurement(measurementDTO);
         measurementValidator.validate(measurement, bindingResult);
         measurementsService.createMeasurement(measurement);
         //return ResponseEntity.ok().body(measurement);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(measurementDTO);
     }
 
     @GetMapping
-    public List<MeasurementDTO> getMeasurements(){
-        return measurementsService.findAll().stream().map(this::convertToMeasurementDTO).collect(Collectors.toList());
+    public ResponseEntity<List<MeasurementDTO>> getMeasurements(){
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(measurementsService.findAll().stream().map(this::convertToMeasurementDTO).collect(Collectors.toList()));
     }
 
     @GetMapping("/rainyDaysCount")
-    public MeasurementRainyCountDTO rainyDaysCount(){
-        return new MeasurementRainyCountDTO(measurementsService.getRainyDaysCount());
+    public ResponseEntity<?> rainyDaysCount(){
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new MeasurementRainyCountDTO(measurementsService.getRainyDaysCount()));
     }
 
     private Measurement convertToMeasurement(MeasurementDTO measurementDTO){

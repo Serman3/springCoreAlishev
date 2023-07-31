@@ -9,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -19,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -37,6 +35,27 @@ class SensorsControllerTest {
 
 	@InjectMocks
 	private SensorsController sensorsController;
+
+    @Test
+    @DisplayName("GET /sensors/{id} Возвращает HTTP-ответ со статусом 200 OK и сенсором полученным по id")
+    public void getSensorTest_ReturnsValidResponseEntity(){
+        //given дано
+        Sensor sensor = new Sensor("sensorName");
+        sensor.setId(1);
+        Mockito.doReturn(sensor).when(this.sensorsService).findOne(sensor.getId());
+        //when когда
+        var responseEntity = this.sensorsController.getSensor(sensor.getId());
+        //then тогда
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(MediaType.APPLICATION_JSON, responseEntity.getHeaders().getContentType());
+        if (responseEntity.getBody() != null){
+            assertNotNull(responseEntity.getBody().getName());
+        }else {
+            assertNull(responseEntity.getBody());
+        }
+        assertEquals(modelMapper.map(sensor, SensorDTO.class), responseEntity.getBody());
+    }
 
 	@Test
     @DisplayName("GET /sensors Возвращает HTTP-ответ со статусом 200 OK и списком сенсоров")
@@ -77,6 +96,4 @@ class SensorsControllerTest {
 		Mockito.verify(this.sensorsService).save(modelMapper.map(sensorDTO, Sensor.class)); //  Проверка на вызывался ли метод save в sensorService
 		Mockito.verifyNoMoreInteractions(this.sensorsService);  // проверка что больше не было обращений к сервису
     }
-
-
 }

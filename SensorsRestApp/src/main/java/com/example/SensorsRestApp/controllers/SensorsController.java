@@ -14,10 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,8 +46,10 @@ public class SensorsController {
     }
 
     @GetMapping("/{id}")
-    public SensorDTO getSensor(@PathVariable("id") int id) {
-        return convertToSensorDTO(sensorsService.findOne(id)); // Jackson конвертирует в JSON
+    public ResponseEntity<SensorDTO> getSensor(@PathVariable("id") int id) {
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(convertToSensorDTO(sensorsService.findOne(id))); // Jackson конвертирует в JSON
     }
 
     @PostMapping("/registration")
